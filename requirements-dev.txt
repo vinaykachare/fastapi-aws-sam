@@ -1,0 +1,5 @@
+fastapi==0.65.1
+uvicorn==0.13.4
+mangum==0.11.0
+python-dotenv
+aws-sam-cli

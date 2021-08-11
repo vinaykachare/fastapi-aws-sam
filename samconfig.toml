@@ -1,0 +1,16 @@
+version = 0.1
+[default.build]
+[default.build.parameters]
+use_container = true
+skip_pull_image = true
+
+[qa]
+[qa.deploy]
+[qa.deploy.parameters]
+stack_name = "fastapi-hello-world"
+s3_bucket = "sam-source-code-bucket"
+s3_prefix = "fastapi-hello-world"
+region = "ap-south-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "ENV=\"qa\""

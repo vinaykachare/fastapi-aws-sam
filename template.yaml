@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    FastAPI with aws sam
+
+
+Parameters:
+    ENV:
+        Type: String
+        Default: dev
+        Description: Environment name
+    
+
+Resources:
+    HelloWorldApiGateway:
+        Type: AWS::Serverless::Api
+        Properties:
+            StageName:
+                Fn::Sub: "${ENV}"
+            Description: Fast API Hello World example
+            Name:
+                Fn::Sub: "helloworldapi-${ENV}"
+    
+    ApiLambdaFunction:
+        Type: AWS::Serverless::Function
+        Properties:
+            CodeUri: ./
+            Handler: src.main.handler
+            Runtime: python3.8
+            Timeout: 30
+            MemorySize: 128
+            FunctionName:
+                Fn::Sub: "fastapi-function-${ENV}"
+            Environment:
+                Variables:
+                    ENV:
+                        Ref: ENV
+            Events:
+                ApiEvent:
+                    Type: Api
+                    Properties:
+                        RestApiId:
+                            Ref: HelloWorldApiGateway
+                        Path: /{proxy+}
+                        Method: ANY
+            
+Outputs:
+  # Find out more about other implicit resources you can reference within SAM
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for ${ENV} stage for Hello World function"
+    Value: 
+        Fn::Sub: "https://${HelloWorldApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${ENV}/"
